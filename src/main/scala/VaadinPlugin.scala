@@ -34,6 +34,14 @@ object VaadinPlugin extends Plugin {
      */
     vaadinClientWidgetSetDestination <<= (sourceDirectory){ (src:File) => src / "main" / "webapp" / "VAADIN" / "widgetsets" },
     /**
+     *  Issue #2: make sure the GWT sdk first in the classpath
+     *  thanks to anovstrup
+     */
+    dependencyClasspath in Vaadin <<= (dependencyClasspath in Vaadin) map { cp =>
+        val (a, b) = cp partition { _.data.getAbsolutePath.contains("gwt") }
+        (a ++ b)
+      },
+    /**
      *
      */
     vaadinCompileWidgetSet <<= (dependencyClasspath in Vaadin,
